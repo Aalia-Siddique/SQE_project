@@ -9,7 +9,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // For Windows, use bat instead of sh
+                    // Install dependencies using pip
                     bat 'pip install -r requirements.txt'
                 }
             }
@@ -18,22 +18,23 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
-                        // For Windows, use bat instead of sh
-                        bat 'pytest --junitxml=test-results.xml'
+                        // Run pytest on the 'tests/' folder and save the results to 'test-results.xml'
+                        bat 'pytest tests/ --junitxml=test-results.xml'
                     }
                 }
             }
         }
     }
-   post {
-    always {
-        script {
-            if (fileExists('test-results.xml') && readFile('test-results.xml').trim()) {
-                junit 'test-results.xml'
-            } else {
-                echo "No test results found."
+    post {
+        always {
+            script {
+                // Check if 'test-results.xml' exists and contains results
+                if (fileExists('test-results.xml') && readFile('test-results.xml').trim()) {
+                    junit 'test-results.xml'  // Publish the test results to Jenkins
+                } else {
+                    echo "No test results found."
+                }
             }
         }
     }
-}
 }
