@@ -25,9 +25,15 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            junit 'test-results.xml'
+   post {
+    always {
+        script {
+            if (fileExists('test-results.xml') && readFile('test-results.xml').trim()) {
+                junit 'test-results.xml'
+            } else {
+                echo "No test results found."
+            }
         }
     }
+}
 }
