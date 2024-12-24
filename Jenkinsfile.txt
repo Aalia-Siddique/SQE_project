@@ -1,41 +1,19 @@
 pipeline {
     agent any
-
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Aalia-Siddique/SQE_project'
-            }
-        }
-
         stage('Build') {
             steps {
-                sh './build.sh' // Replace with your build command
+                echo 'Building...'
             }
         }
-
         stage('Test') {
             steps {
-                sh './test.sh' // Replace with your test command
+                echo 'Testing...'
             }
         }
-
         stage('Deploy') {
             steps {
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'My-Server', // SSH server config in Jenkins
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: '**/*',
-                                    remoteDirectory: '/var/www/html', // Deployment directory
-                                    removePrefix: ''
-                                )
-                            ]
-                        )
-                    ]
-                )
+                echo 'Deploying...'
             }
         }
     }
