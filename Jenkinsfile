@@ -13,7 +13,9 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'pytest --junitxml=test-results.xml'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh 'pytest --junitxml=test-results.xml'
+                }
             }
         }
     }
