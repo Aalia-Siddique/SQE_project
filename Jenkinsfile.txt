@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/username/repo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './build.sh' // Replace with your build command
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './test.sh' // Replace with your test command
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'My-Server', // SSH server config in Jenkins
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: '**/*',
+                                    remoteDirectory: '/var/www/html', // Deployment directory
+                                    removePrefix: ''
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+    }
+}
