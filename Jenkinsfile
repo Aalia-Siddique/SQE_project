@@ -1,20 +1,25 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo 'Building...'
+                git branch: 'main', url: 'https://github.com/Aalia-Siddique/SQE_project'
             }
         }
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Testing...'
+                sh 'pip install -r requirements.txt'
             }
         }
-        stage('Deploy') {
+        stage('Run Tests') {
             steps {
-                echo 'Deploying...'
+                sh 'pytest --junitxml=test-results.xml'
             }
+        }
+    }
+    post {
+        always {
+            junit 'test-results.xml'
         }
     }
 }
